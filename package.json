@@ -1,7 +1,7 @@
 {
   "name": "gulp-exec",
   "description": "exec plugin for gulp",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "homepage": "https://github.com/robrich/gulp-exec",
   "repository": "git://github.com/robrich/gulp-exec.git",
   "author": "Rob Richardson (http://robrich.org/)",
@@ -25,7 +25,7 @@
   "licenses": [
     {
       "type": "MIT",
-      "url": "http://github.com/wearefractal/gulp-jshint/raw/master/LICENSE"
+      "url": "http://github.com/robrich/gulp-exec/raw/master/LICENSE"
     }
   ]
 }
