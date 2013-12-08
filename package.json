@@ -10,7 +10,8 @@
     "gulpplugin"
   ],
   "dependencies": {
-    "event-stream": "*"
+    "event-stream": "*",
+    "gulp-util":"~1.2.0"
   },
   "devDependencies": {
     "mocha": "*",
