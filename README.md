@@ -16,6 +16,8 @@ gulp.task('reset', function() {
 });
 ```
 
+Note this now uses `gulp-util` for templating, a breaking change from previous versions.
+
 LICENSE
 -------
 

@@ -1,7 +1,7 @@
 {
   "name": "gulp-exec",
   "description": "exec plugin for gulp",
-  "version": "0.0.3",
+  "version": "1.0.0",
   "homepage": "https://github.com/robrich/gulp-exec",
   "repository": "git://github.com/robrich/gulp-exec.git",
   "author": "Rob Richardson (http://robrich.org/)",
