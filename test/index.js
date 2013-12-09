@@ -4,6 +4,8 @@
 "use strict";
 
 var exec = require('../');
+var gutil = require('gulp-util');
+var path = require('path');
 var fs = require('fs');
 var should = require('should');
 require('mocha');
@@ -14,25 +16,27 @@ describe('gulp-exec', function() {
 
 		it('should pass file structure through', function(done) {
 			// Arrange
-			var tempFile = './temp.txt';
-			var tempFileShort = 'temp.txt';
+			var base = path.join(__dirname, '../');
+			var tempFile = path.join(base, './temp.txt');
+			var relative = 'temp.txt';
+			var fakeFile = new gutil.File({
+				base: base,
+				cwd: base,
+				path: tempFile,
+				contents: new Buffer(tempFileContent)
+			});
 
 			var stream = exec('echo hi');
-			var fakeFile = {
-				path: tempFile,
-				shortened: tempFileShort,
-				contents: new Buffer(tempFileContent)
-			};
 
 			// Assert
 			stream.on('data', function(actualFile){
 				// Test that content passed through
 				should.exist(actualFile);
 				should.exist(actualFile.path);
-				should.exist(actualFile.shortened);
+				should.exist(actualFile.relative);
 				should.exist(actualFile.contents);
 				actualFile.path.should.equal(tempFile);
-				actualFile.shortened.should.equal(tempFileShort);
+				actualFile.relative.should.equal(relative);
 				String(actualFile.contents).should.equal(tempFileContent);
 				done();
 			});
@@ -42,24 +46,28 @@ describe('gulp-exec', function() {
 			stream.end();
 		});
 
-		it('should execute a command', function(done) {
+		it('should execute a command with options and templating', function(done) {
 			// Arrange
-			var tempFile = './temp.txt';
-			var tempFileShort = 'temp.txt';
+			var ext = 'out';
+			var base = path.join(__dirname, '../');
+			var tempFile = path.join(base, './temp.txt');
+			var relative = 'temp.txt';
+			var fakeFile = new gutil.File({
+				base: base,
+				cwd: base,
+				path: tempFile,
+				contents: new Buffer(tempFileContent)
+			});
+
 			fs.writeFileSync(tempFile, tempFileContent);
 			fs.existsSync(tempFile).should.equal(true);
 
-			var stream = exec('cp "<%= file.path %>" "<%= file.path %>.out"');
-			var fakeFile = {
-				path: tempFile,
-				shortened: tempFileShort,
-				contents: new Buffer(tempFileContent)
-			};
+			var stream = exec('cp "<%= file.path %>" "<%= file.path %>.<%= options.ext %>"', {ext: ext});
 
 			// Assert
 			stream.once('end', function(/*actualFile*/){
 				// Test that command executed
-				fs.existsSync(tempFile+'.out').should.equal(true);
+				fs.existsSync(tempFile+'.'+ext).should.equal(true);
 				done();
 			});
 
@@ -70,18 +78,21 @@ describe('gulp-exec', function() {
 
 		it('should error on invalid command', function(done) {
 			// Arrange
-			var tempFile = './temp.txt';
-			var tempFileShort = 'temp.txt';
+			var base = path.join(__dirname, '../');
+			var tempFile = path.join(base, './temp.txt');
+			var relative = 'temp.txt';
+			var fakeFile = new gutil.File({
+				base: base,
+				cwd: base,
+				path: tempFile,
+				contents: new Buffer(tempFileContent)
+			});
+
 			var cmd = 'not_a_command';
 			fs.writeFileSync(tempFile, tempFileContent);
 			fs.existsSync(tempFile).should.equal(true);
 
 			var stream = exec(cmd);
-			var fakeFile = {
-				path: tempFile,
-				shortened: tempFileShort,
-				contents: new Buffer(tempFileContent)
-			};
 
 			var err;
 			// Swap out error handling

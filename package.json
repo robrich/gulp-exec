@@ -17,6 +17,10 @@
     "mocha": "*",
     "should": "*"
   },
+  "peerDependencies": {
+    "gulp": "~3.0.0"
+  },
+
   "scripts": {
     "test": "mocha"
   },
