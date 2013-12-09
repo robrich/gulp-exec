@@ -49,7 +49,7 @@ describe('gulp-exec', function() {
 			fs.writeFileSync(tempFile, tempFileContent);
 			fs.existsSync(tempFile).should.equal(true);
 
-			var stream = exec('cp "$file" "$file.out"');
+			var stream = exec('cp "<%= file.path %>" "<%= file.path %>.out"');
 			var fakeFile = {
 				path: tempFile,
 				shortened: tempFileShort,

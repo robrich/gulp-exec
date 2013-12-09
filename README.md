@@ -12,7 +12,7 @@ Usage
 var exec = require('gulp-exec');
 
 gulp.task('reset', function() {
-  gulp.files('./**/**').pipe(exec('git checkout $file'));
+  gulp.files('./**/**').pipe(exec('git checkout <%= file.path %>'));
 });
 ```
 
