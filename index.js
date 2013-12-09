@@ -3,7 +3,7 @@
 "use strict";
 
 var es = require('event-stream'),
-  gutil = require('gulp-util'),
+	gutil = require('gulp-util'),
 	path = require('path'),
 	exec = require('child_process').exec;
 
@@ -18,8 +18,8 @@ module.exports = function(command, opt){
 		};
 	}
 	return es.map(function (file, cb){
-		var filepath = path.resolve(file.path);
-		var cmd = gutil.template(command, {file: file});
+		opt.file = file;
+		var cmd = gutil.template(command, opt);
 
 		exec(cmd, function (error, stdout, stderr) {
 			if (stderr) {
