@@ -4,7 +4,6 @@
 
 var es = require('event-stream'),
 	gutil = require('gulp-util'),
-	path = require('path'),
 	exec = require('child_process').exec;
 
 module.exports = function(command, opt){
