@@ -21,7 +21,7 @@ module.exports = function(command, opt){
 	return map(function (file, cb){
 		var cmd = gutil.template(command, {file: file, options: opt});
 
-		exec(cmd, function (error, stdout, stderr) {
+		exec(cmd, opt, function (error, stdout, stderr) {
 			if (!opt.silent && stderr) {
 				gutil.log(stderr);
 			}
