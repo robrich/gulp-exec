@@ -17,6 +17,9 @@ module.exports = function(command, opt){
 	if (typeof opt.silent === 'undefined') {
 		opt.silent = false;
 	}
+	if (typeof opt.continueOnError === 'undefined') {
+		opt.continueOnError = false;
+	}
 
 	return map(function (file, cb){
 		var cmd = gutil.template(command, {file: file, options: opt});
@@ -31,7 +34,7 @@ module.exports = function(command, opt){
 			if (!opt.silent && stdout) {
 				gutil.log(stdout);
 			}
-			cb(error, file);
+			cb(opt.continueOnError ? null : error, file);
 		});
 	});
 };
