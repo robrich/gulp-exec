@@ -119,5 +119,28 @@ describe('gulp-exec', function() {
 			stream.end();
 		});
 
+		it('should not emit error when `continueOnError == true`', function (done) {
+			// Arrange
+			var fakeFile = new gutil.File();
+			var cmd = 'not_a_command';
+
+			var stream = exec(cmd, {continueOnError: true});
+
+			var emitted = false;
+			stream.on('error', function () {
+				emitted = true;
+			});
+
+			// Assert
+			stream.on('end', function () {
+				emitted.should.be.false;
+				done();
+			});
+
+			// Act
+			stream.write(fakeFile);
+			stream.end();
+		});
+
 	});
 });

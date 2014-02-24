@@ -14,6 +14,7 @@ var exec = require('gulp-exec');
 gulp.task('reset', function() {
   var options = {
     silent: true,
+    continueOnError: true, // default: false
     customTemplatingThing: "test"
   };
   gulp.src('./**/**')
