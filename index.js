@@ -17,14 +17,11 @@ module.exports = function(command, opt){
 	if (typeof opt.silent === 'undefined') {
 		opt.silent = false;
 	}
-	if (typeof opt.continueOnError === 'undefined') {
-		opt.continueOnError = false;
-	}
 
 	return map(function (file, cb){
 		var cmd = gutil.template(command, {file: file, options: opt});
 
-		exec(cmd, function (error, stdout, stderr) {
+		exec(cmd, opt, function (error, stdout, stderr) {
 			if (!opt.silent && stderr) {
 				gutil.log(stderr);
 			}
@@ -34,7 +31,7 @@ module.exports = function(command, opt){
 			if (!opt.silent && stdout) {
 				gutil.log(stdout);
 			}
-			cb(opt.continueOnError ? null : error, file);
+			cb(error, file);
 		});
 	});
 };
