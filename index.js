@@ -17,6 +17,9 @@ module.exports = function(command, opt){
 	if (typeof opt.silent === 'undefined') {
 		opt.silent = false;
 	}
+	if (typeof opt.silentOnError === 'undefined') {
+		opt.silentOnError = false;
+	}
 	if (typeof opt.continueOnError === 'undefined') {
 		opt.continueOnError = false;
 	}
@@ -27,11 +30,17 @@ module.exports = function(command, opt){
 		exec(cmd, opt, function (error, stdout, stderr) {
 			if (!opt.silent && stderr) {
 				gutil.log(stderr);
+			} else
+			if (!opt.silentOnError && error && stderr) {
+				gutil.log(stderr);
 			}
 			if (stdout) {
 				stdout = stdout.trim(); // Trim trailing cr-lf
 			}
 			if (!opt.silent && stdout) {
+				gutil.log(stdout);
+			} else
+			if (!opt.silentOnError && error && stdout) {
 				gutil.log(stdout);
 			}
 			cb(opt.continueOnError ? null : error, file);
