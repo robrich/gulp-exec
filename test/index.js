@@ -142,5 +142,30 @@ describe('gulp-exec', function() {
 			stream.end();
 		});
 
+        it('should pass the command output with pipeStdout', function (done) {
+            // Arrange
+			var fakeFile = new gutil.File({
+                contents: new Buffer(""),
+			});
+            var cmd = "echo test";
+
+            var stream = exec(cmd, {pipeStdout: true});
+
+            var output = '';
+            stream.on('data', function (file) {
+                output = file.contents.toString();
+            });
+
+            // Assert
+            stream.on('end', function () {
+                output.should.equal("test");
+                done();
+            });
+
+            // Act
+            stream.write(fakeFile);
+            stream.end();
+        })
+
 	});
 });
