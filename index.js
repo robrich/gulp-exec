@@ -21,6 +21,10 @@ module.exports = function(command, opt){
 		opt.continueOnError = false;
 	}
 
+    if (typeof opt.pipeStdout === 'undefined') {
+        opt.pipeStdout = false;
+    }
+
 	return map(function (file, cb){
 		var cmd = gutil.template(command, {file: file, options: opt});
 
@@ -31,9 +35,12 @@ module.exports = function(command, opt){
 			if (stdout) {
 				stdout = stdout.trim(); // Trim trailing cr-lf
 			}
-			if (!opt.silent && stdout) {
+			if (!opt.silent && !opt.pipeStdout && stdout) {
 				gutil.log(stdout);
 			}
+            if (opt.pipeStdout) {
+                file.contents = new Buffer(stdout);
+            }
 			cb(opt.continueOnError ? null : error, file);
 		});
 	});
