@@ -1,25 +1,24 @@
-/*jshint node:true */
 /*global describe:false, it:false */
 
-"use strict";
+'use strict';
 
 var exec = require('../');
-var gutil = require('gulp-util');
+
+var Vinyl = require('vinyl');
 var path = require('path');
 var fs = require('fs');
 var should = require('should');
-require('mocha');
 
 describe('gulp-exec', function() {
 	describe('exec()', function() {
 		var tempFileContent = 'A test generated this file and it is safe to delete';
 
 		it('should pass file structure through', function(done) {
-			// Arrange
+			// arrange
 			var base = path.join(__dirname, '../');
 			var tempFile = path.join(base, './temp.txt');
 			var relative = 'temp.txt';
-			var fakeFile = new gutil.File({
+			var fakeFile = new Vinyl({
 				base: base,
 				cwd: base,
 				path: tempFile,
@@ -28,7 +27,7 @@ describe('gulp-exec', function() {
 
 			var stream = exec('echo hi');
 
-			// Assert
+			// assert
 			stream.on('data', function(actualFile){
 				// Test that content passed through
 				should.exist(actualFile);
@@ -41,18 +40,17 @@ describe('gulp-exec', function() {
 				done();
 			});
 
-			// Act
+			// act
 			stream.write(fakeFile);
 			stream.end();
 		});
 
 		it('should execute a command with options and templating', function(done) {
-			// Arrange
+			// arrange
 			var ext = 'out';
 			var base = path.join(__dirname, '../');
 			var tempFile = path.join(base, './temp.txt');
-			var relative = 'temp.txt';
-			var fakeFile = new gutil.File({
+			var fakeFile = new Vinyl({
 				base: base,
 				cwd: base,
 				path: tempFile,
@@ -64,24 +62,23 @@ describe('gulp-exec', function() {
 
 			var stream = exec('cp "<%= file.path %>" "<%= file.path %>.<%= options.ext %>"', {ext: ext});
 
-			// Assert
-			stream.once('end', function(/*actualFile*/){
+			// assert
+			stream.once('finish', function(){
 				// Test that command executed
 				fs.existsSync(tempFile+'.'+ext).should.equal(true);
 				done();
 			});
 
-			// Act
+			// act
 			stream.write(fakeFile);
 			stream.end();
 		});
 
 		it('should error on invalid command', function(done) {
-			// Arrange
+			// arrange
 			var base = path.join(__dirname, '../');
 			var tempFile = path.join(base, './temp.txt');
-			var relative = 'temp.txt';
-			var fakeFile = new gutil.File({
+			var fakeFile = new Vinyl({
 				base: base,
 				cwd: base,
 				path: tempFile,
@@ -94,27 +91,16 @@ describe('gulp-exec', function() {
 
 			var stream = exec(cmd);
 
-			var err;
-			// Swap out error handling
-			var originalException = process.listeners('uncaughtException').pop();
-			process.removeListener('uncaughtException', originalException);
-			process.once("uncaughtException", function (error) {
-				err = error;
-			});
+			stream.once('err', function (err) {
 
-			// Assert
-			setTimeout(function(){
-				// Put error handling back
-				process.listeners('uncaughtException').push(originalException);
-
-				// Test that it errored
+				// assert
 				should.exist(err);
 				should.exist(err.message);
 				err.message.indexOf(cmd).should.be.above(-1);
 				done();
-			}, 100);
+			});
 
-			// Act
+			// act
 			stream.write(fakeFile);
 			stream.end();
 		});

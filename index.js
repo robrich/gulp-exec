@@ -1,37 +1,69 @@
-/*jshint node:true */
+'use strict';
 
-"use strict";
+var through2 = require('through2');
+var gutil = require('gulp-util');
+var exec = require('child_process').exec;
 
-var map = require('map-stream'),
-	gutil = require('gulp-util'),
-	exec = require('child_process').exec;
+var PLUGIN_NAME = 'gulp-exec';
 
-module.exports = function(command, opt){
+function doExec(command, opt){
 	if (!command) {
 		throw new Error('command is blank');
 	}
-	// defaults
+
 	if (!opt) {
 		opt = {};
 	}
-	if (typeof opt.silent === 'undefined') {
-		opt.silent = false;
-	}
 
-	return map(function (file, cb){
+	return through2.obj(function (file, enc, cb){
 		var cmd = gutil.template(command, {file: file, options: opt});
+		var that = this;
 
-		exec(cmd, function (error, stdout, stderr) {
-			if (!opt.silent && stderr) {
-				gutil.log(stderr);
+		exec(cmd, opt, function (err, stdout, stderr) {
+			file.exec = {
+				stdout: stdout.trim(),
+				stderr: stderr.trim()
+			};
+			if (opt.pipeStdout) {
+				file.exec.contents = file.contents;
+				file.contents = new Buffer(stdout); // FRAGILE: if it wasn't a buffer it is now
 			}
-			if (stdout) {
-				stdout = stdout.trim(); // Trim trailing cr-lf
+			if (err) {
+				that.emit('err', new gutil.PluginError(PLUGIN_NAME, err));
 			}
-			if (!opt.silent && stdout) {
-				gutil.log(stdout);
-			}
-			cb(error, file);
+			that.push(file);
+			cb();
 		});
 	});
-};
+}
+
+function reporter(opt) {
+	if (!opt) {
+		opt = {};
+	}
+
+	if (typeof opt.stderr === 'undefined') {
+		opt.stderr = true;
+	}
+	if (typeof opt.stdout === 'undefined') {
+		opt.stdout = true;
+	}
+
+	return through2.obj(function (file, enc, cb) {
+		if (file && file.exec) {
+			var e = file.exec;
+			if (e.stderr && opt.stderr) {
+				gutil.log(e.stderr);
+			}
+			if (e.stdout && opt.stdout) {
+				gutil.log(e.stdout);
+			}
+		}
+
+		this.pipe(file);
+		cb();
+	});
+}
+
+module.exports = doExec;
+module.exports.reporter = reporter;
