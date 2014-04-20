@@ -7,17 +7,18 @@
   "author": "Rob Richardson (http://robrich.org/)",
   "main": "./index.js",
   "keywords": [
-    "gulpplugin"
+    "gulpplugin",
+    "exec"
   ],
   "dependencies": {
-    "map-stream": "~0.1.0",
-    "gulp-util":"~2.2.14"
+    "gulp-util": "^2.2.14",
+    "through2": "^0.4.1"
   },
   "devDependencies": {
-    "mocha": "~1.17.1",
-    "should": "~3.1.2"
+    "mocha": "^1.18.2",
+    "should": "^3.3.1",
+    "vinyl": "^0.2.3"
   },
-
   "scripts": {
     "test": "mocha"
   },
