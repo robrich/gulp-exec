@@ -1,9 +1,7 @@
-![status](https://secure.travis-ci.org/robrich/gulp-exec.png?branch=master)
-
-gulp-exec
+gulp-exec ![status](https://secure.travis-ci.org/robrich/gulp-exec.png?branch=master)
 ===========
 
-[exec](http://nodejs.org/api/child_process.html#child_process_child_process_exec_command_options_callback) plugin for [gulp](https://github.com/wearefractal/gulp)
+[exec](http://nodejs.org/api/child_process.html#child_process_child_process_exec_command_options_callback) plugin for [gulp](https://github.com/gulpjs/gulp)
 
 Usage
 -----
@@ -13,23 +11,29 @@ var exec = require('gulp-exec');
 
 gulp.task('reset', function() {
   var options = {
-    silent: true,
-    continueOnError: true, // default: false
-    customTemplatingThing: "test"
+    continueOnError: false, // default = false, true means don't emit error event
+    pipeStdout: false, // default = false, true means stdout is written to file.contents
+    customTemplatingThing: "test" // content passed to gutil.template()
   };
+  var reportOptions = {
+  	err: true, // default = true, false means don't write err
+  	stderr: true, // default = true, false means don't write stderr
+  	stdout: true // default = true, false means don't write stdout
+  }
   gulp.src('./**/**')
-    .pipe(exec('git checkout <%= file.path %> <%= options.customTemplatingThing %>', options));
+    .pipe(exec('git checkout <%= file.path %> <%= options.customTemplatingThing %>', options))
+    .pipe(exec.reporter(reportOptions));
 });
 ```
 
-Note this now uses `gulp-util` for templating, a breaking change from previous versions.
+**Note**: running and reporting are now separate, a breaking change from previous versions.
 
 LICENSE
 -------
 
 (MIT License)
 
-Copyright (c) 2013 [Richardson & Sons, LLC](http://richardsonandsons.com/)
+Copyright (c) 2014 [Richardson & Sons, LLC](http://richardsonandsons.com/)
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
