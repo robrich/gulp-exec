@@ -105,5 +105,38 @@ describe('gulp-exec', function() {
 			stream.end();
 		});
 
+		it('should not emit error when `continueOnError == true`', function (done) {
+			// arrange
+			var base = path.join(__dirname, '../');
+			var tempFile = path.join(base, './temp.txt');
+			var fakeFile = new Vinyl({
+				base: base,
+				cwd: base,
+				path: tempFile,
+				contents: new Buffer(tempFileContent)
+			});
+
+			var cmd = 'not_a_command';
+			fs.writeFileSync(tempFile, tempFileContent);
+			fs.existsSync(tempFile).should.equal(true);
+
+			var stream = exec(cmd, {continueOnError: true});
+
+			var emitted = false;
+			stream.on('err', function () {
+				emitted = true;
+			});
+
+			// assert
+			stream.on('finish', function () {
+				emitted.should.equal(false);
+				done();
+			});
+
+			// act
+			stream.write(fakeFile);
+			stream.end();
+		});
+
 	});
 });

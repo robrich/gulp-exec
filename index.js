@@ -15,12 +15,14 @@ function doExec(command, opt){
 		opt = {};
 	}
 
+
 	return through2.obj(function (file, enc, cb){
 		var cmd = gutil.template(command, {file: file, options: opt});
 		var that = this;
 
 		exec(cmd, opt, function (err, stdout, stderr) {
 			file.exec = {
+				err: err,
 				stdout: stdout.trim(),
 				stderr: stderr.trim()
 			};
@@ -28,7 +30,7 @@ function doExec(command, opt){
 				file.exec.contents = file.contents;
 				file.contents = new Buffer(stdout); // FRAGILE: if it wasn't a buffer it is now
 			}
-			if (err) {
+			if (err && !opt.continueOnError) {
 				that.emit('err', new gutil.PluginError(PLUGIN_NAME, err));
 			}
 			that.push(file);
@@ -42,6 +44,9 @@ function reporter(opt) {
 		opt = {};
 	}
 
+	if (typeof opt.err === 'undefined') {
+		opt.err = true;
+	}
 	if (typeof opt.stderr === 'undefined') {
 		opt.stderr = true;
 	}
@@ -52,6 +57,9 @@ function reporter(opt) {
 	return through2.obj(function (file, enc, cb) {
 		if (file && file.exec) {
 			var e = file.exec;
+			if (e.err && opt.err) {
+				gutil.log(e.err);
+			}
 			if (e.stderr && opt.stderr) {
 				gutil.log(e.stderr);
 			}
