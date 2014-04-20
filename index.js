@@ -31,7 +31,7 @@ function doExec(command, opt){
 				file.contents = new Buffer(stdout); // FRAGILE: if it wasn't a buffer it is now
 			}
 			if (err && !opt.continueOnError) {
-				that.emit('err', new gutil.PluginError(PLUGIN_NAME, err));
+				that.emit('error', new gutil.PluginError(PLUGIN_NAME, err));
 			}
 			that.push(file);
 			cb();

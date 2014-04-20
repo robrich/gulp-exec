@@ -89,12 +89,17 @@ describe('gulp-exec', function() {
 
 			var stream = exec(cmd);
 
-			stream.once('err', function (err) {
+			var actualErr;
+			stream.on('error', function (err) {
+				actualErr = err;
+			});
+
+			stream.once('finish', function () {
 
 				// assert
-				should.exist(err);
-				should.exist(err.message);
-				err.message.indexOf(cmd).should.be.above(-1);
+				should.exist(actualErr);
+				should.exist(actualErr.message);
+				actualErr.message.indexOf(cmd).should.be.above(-1);
 				done();
 			});
 
@@ -119,7 +124,7 @@ describe('gulp-exec', function() {
 			var stream = exec(cmd, {continueOnError: true});
 
 			var emitted = false;
-			stream.on('err', function () {
+			stream.on('error', function () {
 				emitted = true;
 			});
 
@@ -148,10 +153,16 @@ describe('gulp-exec', function() {
 
 			var stream = exec('exit 2', {ext: ext});
 
+			var emitted = false;
+			stream.on('error', function () {
+				emitted = true;
+			});
+
 			// assert
 			stream.once('finish', function(){
 				// Test that command executed
 				// If we got here, exec didn't die
+				emitted.should.equal(true);
 				done();
 			});
 
