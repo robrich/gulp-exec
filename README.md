@@ -26,6 +26,22 @@ gulp.task('reset', function() {
 });
 ```
 
+**Note**: If you just want to run a command, just run the command, don't use this plugin:
+
+```js
+var exec = require('child_process').exec;
+
+gulp.task('task', function (cb) {
+  exec('rm -rf *', function (err, stdout, stderr) {
+    console.log(stdout);
+    console.log(stderr);
+    cb(err);
+  });
+})
+```
+
+~~`gulp.src('.')`~~ does bad things.  Don't do it.
+
 **Note**: running and reporting are now separate, a breaking change from previous versions.
 
 LICENSE
