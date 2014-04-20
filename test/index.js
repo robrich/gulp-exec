@@ -86,8 +86,6 @@ describe('gulp-exec', function() {
 			});
 
 			var cmd = 'not_a_command';
-			fs.writeFileSync(tempFile, tempFileContent);
-			fs.existsSync(tempFile).should.equal(true);
 
 			var stream = exec(cmd);
 
@@ -117,8 +115,6 @@ describe('gulp-exec', function() {
 			});
 
 			var cmd = 'not_a_command';
-			fs.writeFileSync(tempFile, tempFileContent);
-			fs.existsSync(tempFile).should.equal(true);
 
 			var stream = exec(cmd, {continueOnError: true});
 
@@ -139,31 +135,27 @@ describe('gulp-exec', function() {
 		});
 
 		it('should not exit if command results in error status', function(done) {
-			// Arrange
+			// arrange
 			var ext = 'out';
 			var base = path.join(__dirname, '../');
 			var tempFile = path.join(base, './temp.txt');
-			var relative = 'temp.txt';
-			var fakeFile = new gutil.File({
+			var fakeFile = new Vinyl({
 				base: base,
 				cwd: base,
 				path: tempFile,
 				contents: new Buffer(tempFileContent)
 			});
 
-			fs.writeFileSync(tempFile, tempFileContent);
-			fs.existsSync(tempFile).should.equal(true);
-
 			var stream = exec('exit 2', {ext: ext});
 
-			// Assert
-			stream.once('end', function(){
+			// assert
+			stream.once('finish', function(){
 				// Test that command executed
-				true.should.be.ok;
+				// If we got here, exec didn't die
 				done();
 			});
 
-			// Act
+			// act
 			stream.write(fakeFile);
 			stream.end();
 		});
