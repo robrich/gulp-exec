@@ -1,4 +1,4 @@
-/*global describe:false, it:false */
+/*global describe:false, it:false, beforeEach:false, afterEach:false */
 
 'use strict';
 
@@ -27,7 +27,7 @@ describe('gulp-exec', function() {
 		afterEach(function () {
 			gutil.log = realLog;
 			logContent = [];
-		})
+		});
 
 		function getFakeFile() {
 			var fakeFile = new Vinyl({
