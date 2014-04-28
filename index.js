@@ -39,7 +39,7 @@ function doExec(command, opt){
 	});
 }
 
-function reporter(opt) {
+function reporter(opt){
 	if (!opt) {
 		opt = {};
 	}
@@ -54,7 +54,7 @@ function reporter(opt) {
 		opt.stdout = true;
 	}
 
-	return through2.obj(function (file, enc, cb) {
+	return through2.obj(function (file, enc, cb){
 		if (file && file.exec) {
 			var e = file.exec;
 			if (e.err && opt.err) {
@@ -68,7 +68,7 @@ function reporter(opt) {
 			}
 		}
 
-		this.pipe(file);
+		this.push(file);
 		cb();
 	});
 }
