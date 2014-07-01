@@ -82,9 +82,9 @@ describe('gulp-exec', function() {
 
 				// assert
 				logContent.length.should.equal(3);
-				logContent[0].should.equal(errData);
+				logContent[0].should.equal(stdoutData);
 				logContent[1].should.equal(stderrData);
-				logContent[2].should.equal(stdoutData);
+				logContent[2].should.equal(errData);
 
 				done();
 			});
@@ -146,9 +146,9 @@ describe('gulp-exec', function() {
 
 				// assert
 				logContent.length.should.equal(3);
-				logContent[0].should.equal(errData);
+				logContent[0].should.equal(stdoutData);
 				logContent[1].should.equal(stderrData);
-				logContent[2].should.equal(stdoutData);
+				logContent[2].should.equal(errData);
 
 				done();
 			});
