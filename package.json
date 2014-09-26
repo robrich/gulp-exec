@@ -1,7 +1,7 @@
 {
   "name": "gulp-exec",
   "description": "exec plugin for gulp",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "homepage": "https://github.com/robrich/gulp-exec",
   "repository": "git://github.com/robrich/gulp-exec.git",
   "author": "Rob Richardson (http://robrich.org/)",
@@ -12,16 +12,16 @@
   ],
   "dependencies": {
     "gulp-util": "^3.0.0",
-    "through2": "^0.5.1"
+    "through2": "~0.6.2"
   },
   "devDependencies": {
-    "jshint": "^2.5.2",
-    "mocha": "^1.20.1",
+    "jshint": "^2.5.6",
+    "mocha": "^1.21.4",
     "should": "^4.0.4",
-    "vinyl": "^0.3.0"
+    "vinyl": "~0.4.3"
   },
   "scripts": {
-    "test": "mocha && jshint ./*.js && jshint ./test/*.js"
+    "test": "mocha && jshint ./index.js ./test/."
   },
   "engines": {
     "node": ">= 0.10.0"
