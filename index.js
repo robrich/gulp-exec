@@ -57,14 +57,14 @@ function reporter(opt){
 	return through2.obj(function (file, enc, cb){
 		if (file && file.exec) {
 			var e = file.exec;
-			if (e.err && opt.err) {
-				gutil.log(e.err);
+			if (e.stdout && opt.stdout) {
+				gutil.log(e.stdout);
 			}
 			if (e.stderr && opt.stderr) {
 				gutil.log(e.stderr);
 			}
-			if (e.stdout && opt.stdout) {
-				gutil.log(e.stdout);
+			if (e.err && opt.err) {
+				gutil.log(e.err);
 			}
 		}
 
