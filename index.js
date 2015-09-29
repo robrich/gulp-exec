@@ -1,6 +1,7 @@
 'use strict';
 
 var through2 = require('through2');
+var path = require('path');
 var gutil = require('gulp-util');
 var exec = require('child_process').exec;
 
@@ -15,6 +16,16 @@ function doExec(command, opt){
 		opt = {};
 	}
 
+	if (!opt.env) {
+		opt.env = process.env;
+	}
+
+	// Include node_modules/.bin on the path when we execute the command.
+	var oldPath = opt.env.PATH;
+	var newPath = path.join(__dirname, '..', '..', '.bin');
+	newPath += path.delimiter;
+	newPath += oldPath;
+	opt.env.PATH = newPath;
 
 	return through2.obj(function (file, enc, cb){
 		var cmd = gutil.template(command, {file: file, options: opt});
