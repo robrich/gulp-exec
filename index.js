@@ -31,7 +31,7 @@ function doExec(command, opt){
 		var cmd = gutil.template(command, {file: file, options: opt});
 		var that = this;
 
-		exec(cmd, opt, function (err, stdout, stderr) {
+		opt.childProcess = exec(cmd, opt, function (err, stdout, stderr) {
 			file.exec = {
 				err: err,
 				stdout: stdout.trim(),
