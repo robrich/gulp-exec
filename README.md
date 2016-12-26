@@ -14,6 +14,7 @@ gulp.task('reset', function() {
     continueOnError: false, // default = false, true means don't emit error event
     pipeStdout: false, // default = false, true means stdout is written to file.contents
     customTemplatingThing: "test" // content passed to gutil.template()
+    // options.childProcess will be set to ChildProcess object resulting from exec()
   };
   var reportOptions = {
   	err: true, // default = true, false means don't write err
