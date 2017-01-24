@@ -27,7 +27,7 @@ function doExec(command, opt){
 	// Include node_modules/.bin on the path when we execute the command.
 	var oldPath = opt.env.PATH;
 	var newPath = path.join(__dirname, '..', '..', '.bin');
-	var regExp = new RegExp("(^|" + escapeRegExp(path.delimiter) + ")" + escapeRegExp(newPath) + "(" + escapeRegExp(path.delimiter) + "|$");
+	var regExp = new RegExp("(^|" + escapeRegExp(path.delimiter) + ")" + escapeRegExp(newPath) + "(" + escapeRegExp(path.delimiter) + "|$)");
 	if (!regExp.exec(oldPath)) {
 		newPath += path.delimiter;
 		newPath += oldPath;
