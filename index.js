@@ -9,6 +9,10 @@ var exec = require('child_process').exec;
 
 var PLUGIN_NAME = 'gulp-exec';
 
+function escapeRegExp(val) {
+	return val.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')
+}
+
 function doExec(command, opt){
 	if (!command) {
 		throw new Error('command is blank');
@@ -25,9 +29,12 @@ function doExec(command, opt){
 	// Include node_modules/.bin on the path when we execute the command.
 	var oldPath = opt.env.PATH;
 	var newPath = path.join(__dirname, '..', '..', '.bin');
-	newPath += path.delimiter;
-	newPath += oldPath;
-	opt.env.PATH = newPath;
+	var regExp = new RegExp("(^|" + escapeRegExp(path.delimiter) + ")" + escapeRegExp(newPath) + "(" + escapeRegExp(path.delimiter) + "|$)");
+	if (!regExp.exec(oldPath)) {
+		newPath += path.delimiter;
+		newPath += oldPath;
+		opt.env.PATH = newPath;
+	}
 
 	return through2.obj(function (file, enc, cb){
 		var cmd = template(command)({file: file, options: opt});
