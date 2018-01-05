@@ -1,8 +1,9 @@
-/*global describe:false, it:false */
+/*global describe:false, it:false, afterEach:false */
 
 'use strict';
 
 var exec = require('../');
+var prependPath = require('../prependPath');
 
 var Vinyl = require('vinyl');
 var path = require('path');
@@ -12,6 +13,11 @@ var should = require('should');
 describe('gulp-exec', function() {
 	describe('exec()', function() {
 		var tempFileContent = 'A test generated this file and it is safe to delete';
+		var realPath = process.env.PATH;
+
+		afterEach(function () {
+			process.env.PATH = realPath;
+		});
 
 		it('should pass file structure through', function(done) {
 			// arrange
@@ -163,6 +169,67 @@ describe('gulp-exec', function() {
 				// Test that command executed
 				// If we got here, exec didn't die
 				emitted.should.equal(true);
+				done();
+			});
+
+			// act
+			stream.write(fakeFile);
+			stream.end();
+		});
+
+		it('should prepend to path', function(done) {
+			// arrange
+			var startPath = process.env.PATH;
+			var base = path.join(__dirname, '../');
+			var tempFile = path.join(base, './temp.txt');
+			var fakeFile = new Vinyl({
+				base: base,
+				cwd: base,
+				path: tempFile,
+				contents: new Buffer(tempFileContent)
+			});
+
+			var stream = exec('echo hi');
+
+			// assert
+			stream.once('finish', function(){
+				// If we got here, exec didn't die
+
+				// Test that path is unchanged
+				var endPath = process.env.PATH;
+				endPath.should.not.equal(startPath);
+
+				done();
+			});
+
+			// act
+			stream.write(fakeFile);
+			stream.end();
+		});
+
+		it('should not prepend to path if already exists', function(done) {
+			// arrange
+			prependPath(process.env);
+			var startPath = process.env.PATH;
+			var base = path.join(__dirname, '../');
+			var tempFile = path.join(base, './temp.txt');
+			var fakeFile = new Vinyl({
+				base: base,
+				cwd: base,
+				path: tempFile,
+				contents: new Buffer(tempFileContent)
+			});
+
+			var stream = exec('echo hi');
+
+			// assert
+			stream.once('finish', function(){
+				// If we got here, exec didn't die
+
+				// Test that path is changed
+				var endPath = process.env.PATH;
+				endPath.should.equal(startPath);
+
 				done();
 			});
 

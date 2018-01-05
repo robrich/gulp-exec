@@ -1,4 +1,4 @@
-/*global describe:false, it:false, beforeEach:false, afterEach:false */
+/*global describe:false, it:false, afterEach:false */
 
 'use strict';
 
@@ -17,6 +17,7 @@ describe('gulp-exec', function() {
 
 		var realConsoleError = console.error;
 		var realConsoleLog = console.log;
+		var realPath = process.env.PATH;
 
 		var logContent = [];
 		function testLog() {
@@ -33,6 +34,7 @@ describe('gulp-exec', function() {
 		afterEach(function () {
 			restoreRealLog();
 			logContent = [];
+			process.env.PATH = realPath;
 		});
 
 		function getFakeFile() {

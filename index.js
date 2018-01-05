@@ -1,10 +1,10 @@
 'use strict';
 
 var through2 = require('through2');
-var path = require('path');
 var PluginError = require('plugin-error');
 var template = require('lodash.template');
 var exec = require('child_process').exec;
+var prependPath = require('./prependPath');
 
 var PLUGIN_NAME = 'gulp-exec';
 
@@ -21,12 +21,7 @@ function doExec(command, opt){
 		opt.env = process.env;
 	}
 
-	// Include node_modules/.bin on the path when we execute the command.
-	var oldPath = opt.env.PATH;
-	var newPath = path.join(__dirname, '..', '..', '.bin');
-	newPath += path.delimiter;
-	newPath += oldPath;
-	opt.env.PATH = newPath;
+	prependPath(opt.env);
 
 	return through2.obj(function (file, enc, cb){
 		var cmd = template(command)({file: file, options: opt});
