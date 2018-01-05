@@ -3,7 +3,6 @@
 var through2 = require('through2');
 var path = require('path');
 var PluginError = require('plugin-error');
-var fancyLog = require('fancy-log');
 var template = require('lodash.template');
 var exec = require('child_process').exec;
 
@@ -71,13 +70,13 @@ function reporter(opt){
 		if (file && file.exec) {
 			var e = file.exec;
 			if (e.stdout && opt.stdout) {
-				fancyLog.info(e.stdout);
+				console.log(e.stdout);
 			}
 			if (e.stderr && opt.stderr) {
-				fancyLog.info(e.stderr);
+				console.error(e.stderr);
 			}
 			if (e.err && opt.err) {
-				fancyLog.info(e.err);
+				console.error(e.err);
 			}
 		}
 

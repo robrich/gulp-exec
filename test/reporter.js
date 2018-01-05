@@ -7,7 +7,6 @@ var exec = require('../');
 var Vinyl = require('vinyl');
 var path = require('path');
 var should = require('should');
-var fancyLog = require('fancy-log');
 
 describe('gulp-exec', function() {
 	describe('reporter()', function() {
@@ -16,16 +15,23 @@ describe('gulp-exec', function() {
 		var tempFile = path.join(base, './temp.txt');
 		var relative = 'temp.txt';
 
-		var realLog = fancyLog.info;
+		var realConsoleError = console.error;
+		var realConsoleLog = console.log;
 
 		var logContent = [];
-		beforeEach(function () {
-			fancyLog.info = function () {
-				logContent.push(Array.prototype.join.call(arguments, ' '));
-			};
-		});
+		function testLog() {
+			logContent.push(Array.prototype.join.call(arguments, ' '));
+		}
+		function setupTestLog() {
+			console.error = testLog;
+			console.log = testLog;
+		}
+		function restoreRealLog() {
+			console.error = realConsoleError;
+			console.log = realConsoleLog;
+		}
 		afterEach(function () {
-			fancyLog.info = realLog;
+			restoreRealLog();
 			logContent = [];
 		});
 
@@ -46,6 +52,7 @@ describe('gulp-exec', function() {
 			var stream = exec.reporter();
 
 			stream.on('data', function(actualFile){
+				restoreRealLog();
 
 				// assert
 				// Test that content passed through
@@ -60,6 +67,7 @@ describe('gulp-exec', function() {
 			});
 
 			// act
+			setupTestLog();
 			stream.write(fakeFile);
 			stream.end();
 		});
@@ -79,6 +87,7 @@ describe('gulp-exec', function() {
 			var stream = exec.reporter();
 
 			stream.once('finish', function(){
+				restoreRealLog();
 
 				// assert
 				logContent.length.should.equal(3);
@@ -90,6 +99,7 @@ describe('gulp-exec', function() {
 			});
 
 			// act
+			setupTestLog();
 			stream.write(fakeFile);
 			stream.end();
 		});
@@ -112,6 +122,7 @@ describe('gulp-exec', function() {
 			});
 
 			stream.once('finish', function(){
+				restoreRealLog();
 
 				// assert
 				logContent.length.should.equal(1);
@@ -121,6 +132,7 @@ describe('gulp-exec', function() {
 			});
 
 			// act
+			setupTestLog();
 			stream.write(fakeFile);
 			stream.end();
 		});
@@ -143,6 +155,7 @@ describe('gulp-exec', function() {
 			});
 
 			stream.once('finish', function(){
+				restoreRealLog();
 
 				// assert
 				logContent.length.should.equal(3);
@@ -154,6 +167,7 @@ describe('gulp-exec', function() {
 			});
 
 			// act
+			setupTestLog();
 			stream.write(fakeFile);
 			stream.end();
 		});
