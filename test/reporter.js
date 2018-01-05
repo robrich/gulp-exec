@@ -7,7 +7,7 @@ var exec = require('../');
 var Vinyl = require('vinyl');
 var path = require('path');
 var should = require('should');
-var gutil = require('gulp-util');
+var fancyLog = require('fancy-log');
 
 describe('gulp-exec', function() {
 	describe('reporter()', function() {
@@ -16,16 +16,16 @@ describe('gulp-exec', function() {
 		var tempFile = path.join(base, './temp.txt');
 		var relative = 'temp.txt';
 
-		var realLog = gutil.log;
+		var realLog = fancyLog.info;
 
 		var logContent = [];
 		beforeEach(function () {
-			gutil.log = function () {
+			fancyLog.info = function () {
 				logContent.push(Array.prototype.join.call(arguments, ' '));
 			};
 		});
 		afterEach(function () {
-			gutil.log = realLog;
+			fancyLog.info = realLog;
 			logContent = [];
 		});
 

@@ -2,7 +2,9 @@
 
 var through2 = require('through2');
 var path = require('path');
-var gutil = require('gulp-util');
+var PluginError = require('plugin-error');
+var fancyLog = require('fancy-log');
+var template = require('lodash.template');
 var exec = require('child_process').exec;
 
 var PLUGIN_NAME = 'gulp-exec';
@@ -28,7 +30,7 @@ function doExec(command, opt){
 	opt.env.PATH = newPath;
 
 	return through2.obj(function (file, enc, cb){
-		var cmd = gutil.template(command, {file: file, options: opt});
+		var cmd = template(command)({file: file, options: opt});
 		var that = this;
 
 		exec(cmd, opt, function (err, stdout, stderr) {
@@ -42,7 +44,7 @@ function doExec(command, opt){
 				file.contents = new Buffer(stdout); // FRAGILE: if it wasn't a buffer it is now
 			}
 			if (err && !opt.continueOnError) {
-				that.emit('error', new gutil.PluginError(PLUGIN_NAME, err));
+				that.emit('error', new PluginError(PLUGIN_NAME, err));
 			}
 			that.push(file);
 			cb();
@@ -69,13 +71,13 @@ function reporter(opt){
 		if (file && file.exec) {
 			var e = file.exec;
 			if (e.stdout && opt.stdout) {
-				gutil.log(e.stdout);
+				fancyLog.info(e.stdout);
 			}
 			if (e.stderr && opt.stderr) {
-				gutil.log(e.stderr);
+				fancyLog.info(e.stderr);
 			}
 			if (e.err && opt.err) {
-				gutil.log(e.err);
+				fancyLog.info(e.err);
 			}
 		}
 
