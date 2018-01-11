@@ -19,7 +19,7 @@ gulp.task('reset', function() {
   	err: true, // default = true, false means don't write err
   	stderr: true, // default = true, false means don't write stderr
   	stdout: true // default = true, false means don't write stdout
-  }
+  };
   return gulp.src('./**/**')
     .pipe(exec('git checkout <%= file.path %> <%= options.customTemplatingThing %>', options))
     .pipe(exec.reporter(reportOptions));
