@@ -13,6 +13,7 @@ var should = require('should');
 describe('gulp-exec', function() {
 	describe('exec()', function() {
 		var tempFileContent = 'A test generated this file and it is safe to delete';
+		var tempBinaryFileContent = '\x89';
 		var realPath = process.env.PATH;
 
 		afterEach(function () {
@@ -230,6 +231,42 @@ describe('gulp-exec', function() {
 				var endPath = process.env.PATH;
 				endPath.should.equal(startPath);
 
+				done();
+			});
+
+			// act
+			stream.write(fakeFile);
+			stream.end();
+		});
+
+		it('should correctly handle binary data from stdout', function(done) {
+			// arrange
+			var base = path.join(__dirname, '../');
+			var tempFile = path.join(base, './temp.bin');			
+			var tempFileBuffer = new Buffer(tempBinaryFileContent, 'binary');
+			var fakeFile = new Vinyl({
+				base: base,
+				cwd: base,
+				path: tempFile,
+				contents: tempFileBuffer
+			});
+			var options = {
+				continueOnError: false,
+				pipeStdout: true,
+				encoding: 'binary'
+			};
+
+			fs.writeFileSync(tempFile, tempFileBuffer, 'binary');
+			fs.existsSync(tempFile).should.equal(true);
+
+			var stream = exec('cat "<%= file.path %>"', options);
+
+			// assert
+			stream.on('data', function(result){				
+				should.exist(result);				
+				should.exist(result.contents);
+				var isBuffersEqual = result.contents.equals(tempFileBuffer);				
+				isBuffersEqual.should.equal(true);				
 				done();
 			});
 
