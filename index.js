@@ -35,7 +35,7 @@ function doExec(command, opt){
 			};
 			if (opt.pipeStdout) {
 				file.exec.contents = file.contents;
-				file.contents = new Buffer(stdout, opt.encoding); // FRAGILE: if it wasn't a buffer it is now				
+				file.contents = Buffer.from(stdout, opt.encoding); // FRAGILE: if it wasn't a buffer it is now
 			}
 			if (err && !opt.continueOnError) {
 				that.emit('error', new PluginError(PLUGIN_NAME, err));

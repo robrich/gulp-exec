@@ -29,7 +29,7 @@ describe('gulp-exec', function() {
 				base: base,
 				cwd: base,
 				path: tempFile,
-				contents: new Buffer(tempFileContent)
+				contents: Buffer.from(tempFileContent)
 			});
 
 			var stream = exec('echo hi');
@@ -61,7 +61,7 @@ describe('gulp-exec', function() {
 				base: base,
 				cwd: base,
 				path: tempFile,
-				contents: new Buffer(tempFileContent)
+				contents: Buffer.from(tempFileContent)
 			});
 
 			fs.writeFileSync(tempFile, tempFileContent);
@@ -89,7 +89,7 @@ describe('gulp-exec', function() {
 				base: base,
 				cwd: base,
 				path: tempFile,
-				contents: new Buffer(tempFileContent)
+				contents: Buffer.from(tempFileContent)
 			});
 
 			var cmd = 'not_a_command';
@@ -123,7 +123,7 @@ describe('gulp-exec', function() {
 				base: base,
 				cwd: base,
 				path: tempFile,
-				contents: new Buffer(tempFileContent)
+				contents: Buffer.from(tempFileContent)
 			});
 
 			var cmd = 'not_a_command';
@@ -155,7 +155,7 @@ describe('gulp-exec', function() {
 				base: base,
 				cwd: base,
 				path: tempFile,
-				contents: new Buffer(tempFileContent)
+				contents: Buffer.from(tempFileContent)
 			});
 
 			var stream = exec('exit 2', {ext: ext});
@@ -187,7 +187,7 @@ describe('gulp-exec', function() {
 				base: base,
 				cwd: base,
 				path: tempFile,
-				contents: new Buffer(tempFileContent)
+				contents: Buffer.from(tempFileContent)
 			});
 
 			var stream = exec('echo hi');
@@ -218,7 +218,7 @@ describe('gulp-exec', function() {
 				base: base,
 				cwd: base,
 				path: tempFile,
-				contents: new Buffer(tempFileContent)
+				contents: Buffer.from(tempFileContent)
 			});
 
 			var stream = exec('echo hi');
@@ -243,7 +243,7 @@ describe('gulp-exec', function() {
 			// arrange
 			var base = path.join(__dirname, '../');
 			var tempFile = path.join(base, './temp.bin');			
-			var tempFileBuffer = new Buffer(tempBinaryFileContent, 'binary');
+			var tempFileBuffer = Buffer.from(tempBinaryFileContent, 'binary');
 			var fakeFile = new Vinyl({
 				base: base,
 				cwd: base,
