@@ -13,7 +13,6 @@ gulp.task('reset', function() {
   var options = {
     continueOnError: false, // default = false, true means don't emit error event
     pipeStdout: false, // default = false, true means stdout is written to file.contents
-    customTemplatingThing: "test" // content passed to lodash.template()
   };
   var reportOptions = {
   	err: true, // default = true, false means don't write err
@@ -21,7 +20,7 @@ gulp.task('reset', function() {
   	stdout: true // default = true, false means don't write stdout
   };
   return gulp.src('./**/**')
-    .pipe(exec('git checkout <%= file.path %> <%= options.customTemplatingThing %>', options))
+    .pipe(exec((file) => `git checkout ${file.path} test`, options))
     .pipe(exec.reporter(reportOptions));
 });
 ```

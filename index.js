@@ -2,7 +2,6 @@
 
 var through2 = require('through2');
 var PluginError = require('plugin-error');
-var template = require('lodash.template');
 var exec = require('child_process').exec;
 var prependPath = require('./prependPath');
 
@@ -24,7 +23,7 @@ function doExec(command, opt){
 	prependPath(opt.env);
 
 	return through2.obj(function (file, enc, cb){
-		var cmd = template(command)({file: file, options: opt});
+		var cmd = typeof command === 'function' ? command(file) : command;
 		var that = this;
 
 		exec(cmd, opt, function (err, stdout, stderr) {
