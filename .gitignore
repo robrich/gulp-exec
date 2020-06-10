@@ -8,3 +8,4 @@ components
 .idea
 temp.txt*
 package-lock.json
+temp.bin

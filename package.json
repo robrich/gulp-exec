@@ -1,10 +1,10 @@
 {
   "name": "gulp-exec",
   "description": "exec plugin for gulp",
-  "version": "4.0.0",
+  "version": "5.0.0",
   "homepage": "https://github.com/robrich/gulp-exec",
   "repository": "git://github.com/robrich/gulp-exec.git",
-  "author": "Rob Richardson (http://robrich.org/)",
+  "author": "Rob Richardson (https://robrich.org/)",
   "main": "./index.js",
   "keywords": [
     "gulpplugin",
@@ -15,9 +15,9 @@
     "through2": "^3.0.1"
   },
   "devDependencies": {
-    "jshint": "^2.9.4",
-    "mocha": "^6.1.4",
-    "should": "^13.2.0",
+    "jshint": "^2.11.1",
+    "mocha": "^8.0.0",
+    "should": "^13.2.3",
     "vinyl": "^2.2.0"
   },
   "scripts": {

@@ -20,7 +20,7 @@ gulp.task('reset', function() {
   	stdout: true // default = true, false means don't write stdout
   };
   return gulp.src('./**/**')
-    .pipe(exec((file) => `git checkout ${file.path} test`, options))
+    .pipe(exec(file => `git checkout ${file.path} test`, options))
     .pipe(exec.reporter(reportOptions));
 });
 ```
@@ -42,6 +42,20 @@ gulp.task('task', function (cb) {
 ~~`gulp.src('.')`~~ does bad things.  Don't do it.
 
 **Note**: running and reporting are now separate, a breaking change from previous versions.
+
+Upgrading
+---------
+
+Version 5 and later no longer use lodash templates. Upgrade from:
+
+```.pipe(exec('git checkout <%= file.path %> <%= options.customTemplatingThing %>', options))```
+
+to:
+
+```.pipe(exec(file => `git checkout ${file.path} customTemplatingThing`, options))```
+
+Note how you can now resolve the command with an ES6 string template in the function.
+
 
 LICENSE
 -------
