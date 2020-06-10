@@ -42,7 +42,7 @@ describe('gulp-exec', function() {
 				base: base,
 				cwd: base,
 				path: tempFile,
-				contents: new Buffer(tempFileContent)
+				contents: Buffer.from(tempFileContent)
 			});
 			return fakeFile;
 		}

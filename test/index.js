@@ -29,7 +29,7 @@ describe('gulp-exec', function() {
 				base: base,
 				cwd: base,
 				path: tempFile,
-				contents: new Buffer(tempFileContent)
+				contents: Buffer.from(tempFileContent)
 			});
 
 			var stream = exec('echo hi');
@@ -61,13 +61,13 @@ describe('gulp-exec', function() {
 				base: base,
 				cwd: base,
 				path: tempFile,
-				contents: new Buffer(tempFileContent)
+				contents: Buffer.from(tempFileContent)
 			});
 
 			fs.writeFileSync(tempFile, tempFileContent);
 			fs.existsSync(tempFile).should.equal(true);
 
-			var stream = exec('cp "<%= file.path %>" "<%= file.path %>.<%= options.ext %>"', {ext: ext});
+			var stream = exec(({ path }) => `cp "${path}" "${path}.${ext}"`);
 
 			// assert
 			stream.once('finish', function(){
@@ -89,7 +89,7 @@ describe('gulp-exec', function() {
 				base: base,
 				cwd: base,
 				path: tempFile,
-				contents: new Buffer(tempFileContent)
+				contents: Buffer.from(tempFileContent)
 			});
 
 			var cmd = 'not_a_command';
@@ -123,7 +123,7 @@ describe('gulp-exec', function() {
 				base: base,
 				cwd: base,
 				path: tempFile,
-				contents: new Buffer(tempFileContent)
+				contents: Buffer.from(tempFileContent)
 			});
 
 			var cmd = 'not_a_command';
@@ -148,17 +148,16 @@ describe('gulp-exec', function() {
 
 		it('should not exit if command results in error status', function(done) {
 			// arrange
-			var ext = 'out';
 			var base = path.join(__dirname, '../');
 			var tempFile = path.join(base, './temp.txt');
 			var fakeFile = new Vinyl({
 				base: base,
 				cwd: base,
 				path: tempFile,
-				contents: new Buffer(tempFileContent)
+				contents: Buffer.from(tempFileContent)
 			});
 
-			var stream = exec('exit 2', {ext: ext});
+			var stream = exec('exit 2');
 
 			var emitted = false;
 			stream.on('error', function () {
@@ -187,7 +186,7 @@ describe('gulp-exec', function() {
 				base: base,
 				cwd: base,
 				path: tempFile,
-				contents: new Buffer(tempFileContent)
+				contents: Buffer.from(tempFileContent)
 			});
 
 			var stream = exec('echo hi');
@@ -218,7 +217,7 @@ describe('gulp-exec', function() {
 				base: base,
 				cwd: base,
 				path: tempFile,
-				contents: new Buffer(tempFileContent)
+				contents: Buffer.from(tempFileContent)
 			});
 
 			var stream = exec('echo hi');
@@ -243,7 +242,7 @@ describe('gulp-exec', function() {
 			// arrange
 			var base = path.join(__dirname, '../');
 			var tempFile = path.join(base, './temp.bin');			
-			var tempFileBuffer = new Buffer(tempBinaryFileContent, 'binary');
+			var tempFileBuffer = Buffer.from(tempBinaryFileContent, 'binary');
 			var fakeFile = new Vinyl({
 				base: base,
 				cwd: base,
@@ -259,13 +258,13 @@ describe('gulp-exec', function() {
 			fs.writeFileSync(tempFile, tempFileBuffer, 'binary');
 			fs.existsSync(tempFile).should.equal(true);
 
-			var stream = exec('cat "<%= file.path %>"', options);
+			var stream = exec(({ path }) => `cat "${path}"`, options);
 
 			// assert
-			stream.on('data', function(result){				
-				should.exist(result);				
+			stream.on('data', function(result){
+				should.exist(result);
 				should.exist(result.contents);
-				var isBuffersEqual = result.contents.equals(tempFileBuffer);				
+				var isBuffersEqual = result.contents.equals(tempFileBuffer);
 				isBuffersEqual.should.equal(true);				
 				done();
 			});
